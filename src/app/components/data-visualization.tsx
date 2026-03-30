@@ -1,6 +1,7 @@
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { TestData } from './data-input-form';
+import { TrendingUp, BarChart3, LineChart as LineChartIcon } from 'lucide-react';
 
 interface DataVisualizationProps {
   historicalData: TestData[];
@@ -10,7 +11,8 @@ interface DataVisualizationProps {
 export function DataVisualization({ historicalData, predictions }: DataVisualizationProps) {
   // Combine historical and predicted data for visualization
   const combinedData = [
-    ...historicalData.map(d => ({
+    ...historicalData.map((d, idx) => ({
+      id: `historical-${idx}`,
       label: `${d.month} ${d.year}`,
       totalTests: d.totalTests,
       cbc: d.cbc,
@@ -18,7 +20,8 @@ export function DataVisualization({ historicalData, predictions }: DataVisualiza
       fecalysis: d.fecalysis,
       type: 'historical' as const
     })),
-    ...predictions.map(d => ({
+    ...predictions.map((d, idx) => ({
+      id: `predicted-${idx}`,
       label: `${d.month} ${d.year}`,
       totalTests: d.totalTests,
       cbc: d.cbc,
@@ -41,20 +44,23 @@ export function DataVisualization({ historicalData, predictions }: DataVisualiza
   // Add connection point between historical and predicted
   if (historicalTrend.length > 0 && predictedTrend.length > 0) {
     const lastHistorical = historicalTrend[historicalTrend.length - 1];
-    predictedTrend.unshift({ ...lastHistorical, type: 'predicted' });
+    predictedTrend.unshift({ ...lastHistorical, id: `connection-point`, type: 'predicted' });
   }
 
   return (
     <div className="space-y-6">
       {/* Total Tests Trend */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Total Tests Trend</CardTitle>
+      <Card className="shadow-xl border-2 border-emerald-100 dark:border-emerald-900">
+        <CardHeader className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-900/30 dark:to-teal-900/30 border-b">
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-emerald-600" />
+            Total Tests Trend
+          </CardTitle>
           <CardDescription>
             Historical data (blue) and forecast predictions (orange)
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={trendData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -94,14 +100,17 @@ export function DataVisualization({ historicalData, predictions }: DataVisualiza
       </Card>
 
       {/* Test Type Distribution */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Test Type Distribution</CardTitle>
+      <Card className="shadow-xl border-2 border-blue-100 dark:border-blue-900">
+        <CardHeader className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-900/30 dark:to-purple-900/30 border-b">
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-blue-600" />
+            Test Type Distribution
+          </CardTitle>
           <CardDescription>
             Breakdown by test category (CBC, Urinalysis, Fecalysis)
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <ResponsiveContainer width="100%" height={350}>
             <BarChart data={combinedData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -140,14 +149,17 @@ export function DataVisualization({ historicalData, predictions }: DataVisualiza
       </Card>
 
       {/* Individual Test Type Trends */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Individual Test Trends</CardTitle>
+      <Card className="shadow-xl border-2 border-indigo-100 dark:border-indigo-900">
+        <CardHeader className="bg-gradient-to-r from-indigo-500/10 to-violet-500/10 dark:from-indigo-900/30 dark:to-violet-900/30 border-b">
+          <CardTitle className="flex items-center gap-2">
+            <LineChartIcon className="w-5 h-5 text-indigo-600" />
+            Individual Test Trends
+          </CardTitle>
           <CardDescription>
             Separate trend lines for each test type
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <ResponsiveContainer width="100%" height={350}>
             <LineChart data={trendData}>
               <CartesianGrid strokeDasharray="3 3" />
